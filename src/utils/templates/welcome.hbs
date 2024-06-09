@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Registration Successful</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, sans-serif, Arial;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .container {
+            padding: 40px 40px 70px 40px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 8px;
+            border: 1px solid #d7dbe0;
+        }
+
+        .container>thead,
+        .container>tbody {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .container>thead>tr {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .container>tbody>tr {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .container>thead>tr>th>.user-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            /* Added display block to center the image */
+            margin: 0 auto;
+            /* Added margin auto to center the image */
+        }
+
+        .container>tbody>tr>.title>h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #000000;
+            line-height: 38.73px;
+            padding: 16px 0 24px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .container>tbody>tr>.content>.user-name {
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 24.2px;
+            text-align: left;
+            padding-bottom: 12px;
+            width: 100%;
+            color: #000000;
+        }
+
+        .container>tbody>tr>.content>.welcome-msg {
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 30px;
+            text-align: left;
+            color: #000000;
+            padding-bottom: 24px;
+            width: 100%;
+        }
+
+        .container>tbody>tr>.content>.user-details {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 28px;
+            text-align: left;
+            color: #000000;
+            padding-bottom: 24px;
+            width: 100%;
+        }
+
+        .container>tbody>tr>.content>.user-image {
+            padding-bottom: 24px;
+            text-align: center;
+        }
+
+        .container>tbody>tr>.nav-link {
+            height: 56px;
+            width: 100%;
+        }
+
+        .container>tbody>tr>.nav-link>a {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 24.2px;
+            text-align: left;
+            padding: 16px 20px 16px 20px;
+            border-radius: 8px;
+            opacity: 1;
+            background: #1d64aa;
+            text-decoration: none;
+            width: auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <table class='container'>
+        <thead>
+            <tr>
+                <th>
+                    <img class='user-image'
+                        src='https://media.licdn.com/dms/image/D560BAQFu4eh9Yj4IDg/company-logo_200_200/0/1684420879029/aaludratech_logo?e=2147483647&v=beta&t=lc2WLP9RsG8YHo4EQXprjGguhqMl9Mbpjij-5RADtVM'
+                        alt='company Image' />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class='title'>
+                    <h1>Did you press the send mail button!!!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td class='content'>
+                    <h2 class='user-name'>Dear {{name}},</h2>
+                    <p class='welcome-msg'>
+                        We are thrilled to welcome you to aaludra! Your registration process has been successfully
+                        completed, and you are now part of our community.
+                    </p>
+                    <div class='user-details'>
+                        <p><strong>Email:</strong> {{email}}</p>
+                        <p><strong>Age:</strong> {{age}}</p>
+                        <p><strong>Roll:</strong> {{roll}}</p>
+                        <p><strong>Company:</strong> {{companyname}}</p>
+                    </div>
+                    <div class='user-image'>
+                        <img src="./welcome.gif" alt="User Image" width="150" height="150" />                       
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class='nav-link'>
+                    <a href="https://aaludra.com/">Company Website</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
