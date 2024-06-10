@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsBase64, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UserDetailsDto {
   @IsString({ message: 'Name must be a string.' })
@@ -20,9 +20,12 @@ export class UserDetailsDto {
   @IsString({ message: 'Company name must be a string.' })
   @IsNotEmpty({ message: 'Company name is required and cannot be empty.' })
   companyname: string;
+  
+  image?: string;
 
-  @IsBase64()
-  @IsNotEmpty({ message: 'Image is required and cannot be empty.' })
-  @IsOptional()
-  image: string;
+  __v?:any;
+
+  status?:any;
+
+
 }

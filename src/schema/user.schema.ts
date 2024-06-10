@@ -18,7 +18,7 @@ export class User extends Document {
   @Prop({ required: true })
   companyname: string;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   image: string;
 
   @Prop({ required: true, enum: ['active', 'inactive'], default: 'active' })

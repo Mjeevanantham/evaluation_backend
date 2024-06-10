@@ -29,17 +29,10 @@ export class MailService {
       debug: true,
     });
 
-    // Convert base64 image to inline image
-    const image = `<img src="data:image/jpeg;base64,${context.image}" alt="User Image" width="150" height="150" />`;
-
-    // Replace the base64 image in the context with the inline image
-    const contextWithInlineImage = {
-      ...context,
-      image: image,
-    };
+    console.log("context >> "+ JSON.stringify(context));
 
     const template = this.templateLoader.getTemplate(templatefilename);
-    const html = template(contextWithInlineImage);
+    const html = template(context);
 
     const mailOptions = {
       from: 'jeevamahalingam42@gmail.com',
