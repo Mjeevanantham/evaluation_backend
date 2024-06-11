@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { ObjectIdDocument } from 'src/dto/common.schema';
 
 @Schema({ collection: 'users' })
-export class User extends Document {
+export class User extends ObjectIdDocument {
   @Prop({ required: true })
   name: string;
 

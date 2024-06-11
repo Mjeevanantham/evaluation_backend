@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { UserDetailsDto } from './dto/userRequest.dto';
 import { User } from './schema/user.schema';
 import { UserRepository } from './models-repository/user.repository';
@@ -6,7 +6,16 @@ import { MailService } from './mail/mail.service';
 import { BlobServiceClient } from '@azure/storage-blob';
 import * as PDFDocument from 'pdfkit';
 import axios from 'axios';
-
+import {
+  // switchMap,
+  from,
+  map,
+  catchError,
+  throwError,
+  // Observable,
+  // of,
+} from 'rxjs';
+import { STATUS_CODES } from 'http';
 @Injectable()
 export class AppService {
   constructor(
@@ -24,6 +33,27 @@ export class AppService {
       templatefilename: 'welcome',
       context: userDetails,
     });
+  }
+
+  async sendMailByID(id: string): Promise<any> {
+    console.log('Details from front-end >>>>>>>>>>> ' + id);
+
+    const userDetails = await this.userRepository.findOneById(id, {});
+
+    console.log('userDetails >>>>>>>>>>> ' + userDetails);
+    return this.mailService.sendMail({
+      to: userDetails.email,
+      subject: `Welcome Mr/Ms ${userDetails.name} `,
+      templatefilename: 'welcome',
+      context: userDetails,
+    });
+  }
+
+  async exportPdfByID(id: string): Promise<any> {
+
+    const userDetails = await this.userRepository.findOneById(id, {});
+
+    return userDetails;
   }
 
   async create(userDetailsDto: UserDetailsDto, image: any): Promise<User> {
@@ -45,22 +75,54 @@ export class AppService {
 
       const blobUrl = blockBlobClient.url;
 
-      const newUser = {
+      const newUser: any = {
         ...userDetailsDto,
         image: blobUrl,
       };
 
-      return await this.userRepository.create(newUser);
+      return await this.userRepository.createOne(newUser);
     } catch (error) {
       console.log('error >>>>>> ' + JSON.stringify(error));
       throw error;
     }
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.findAll();
+  async findAll(): Promise<any> {
+    return from(this.userRepository.findManyByFilter({}))
+      .pipe(
+        map((dataList) => {
+          if (dataList && dataList.data.length > 0) {
+            return {
+              data: dataList.data,
+              count: dataList.total_count,
+              message: `data not found`,
+              status_code: STATUS_CODES.FOUND,
+            };
+          } else {
+            return {
+              data: [],
+              message: `data not found`,
+              status_code: HttpStatus.UNPROCESSABLE_ENTITY,
+            };
+          }
+        }),
+        catchError((error) => {
+          if (error instanceof Error) {
+            this.logger.error(
+              {
+                message: error.name,
+                filepath: __filename,
+                functionname: 'findAll', // Corrected to refer to the current function name
+              },
+              error.stack ?? '',
+              'error',
+            );
+          }
+          return throwError(() => error);
+        }),
+      )
+      .toPromise(); // Ensure the observable is converted back to a Promise
   }
-
   async generatePdf(data: UserDetailsDto): Promise<Buffer> {
     return new Promise(async (resolve, reject) => {
       const doc = new PDFDocument();

@@ -18,8 +18,8 @@ export class CustomLogger implements LoggerService {
     this.writeLog('LOG', message);
   }
 
-  error(message: string, trace: string) {
-    this.writeLog('ERROR', `${message}\nTrace: ${trace}`);
+  error(message: any, trace: string, name?:string) {
+    this.writeLog('ERROR', `${message}\nTrace: ${trace}  Name: ${name}`);
   }
 
   warn(message: string) {

@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -24,6 +25,31 @@ export class AppController {
   @Post('/send_mail')
   async sendMail(@Body() userDetails: UserDetailsDto): Promise<any> {
     return this.appService.sendMail(userDetails);
+  }
+
+  @Get('/send_mail_id')
+  async sendMailByID(@Query('id') id: string): Promise<any> {
+    return this.appService.sendMailByID(id);
+  }
+
+  @Get('/export_pdf')
+  async generatePdfByID(@Query('id') id: string, @Res() res: Response) {
+    const data = await this.appService.exportPdfByID(id);
+    try {
+      console.log(JSON.stringify(data));
+      const pdfBuffer = await this.appService.generatePdf(data);
+      console.log(pdfBuffer);
+      res.setHeader('Content-Type', 'application/pdf');
+      console.log('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${data.name}.pdf`,
+      );
+      res.send(pdfBuffer);
+    } catch (error) {
+      // Handle errors
+      res.status(500).json({ message: 'Error generating PDF' });
+    }
   }
 
   @Post('/add_user')
@@ -68,7 +94,10 @@ export class AppController {
       console.log(pdfBuffer);
       res.setHeader('Content-Type', 'application/pdf');
       console.log('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=${data.name}.pdf`);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${data.name}.pdf`,
+      );
       res.send(pdfBuffer);
     } catch (error) {
       // Handle errors
@@ -77,7 +106,7 @@ export class AppController {
   }
 
   @Get('/getuserlist')
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<any> {
     return this.appService.findAll();
   }
 }
