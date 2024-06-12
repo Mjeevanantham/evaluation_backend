@@ -15,7 +15,7 @@
 
         body {
             font-family: Inter, sans-serif, Arial;
-            background: #ffffff;
+            background: #bebebe;
             color: #000000;
         }
 
@@ -26,36 +26,20 @@
             margin: 0 auto;
             border-radius: 8px;
             border: 1px solid #d7dbe0;
+            background: #ffffff;
+            /* Add background color to the container */
         }
 
-        .container>thead,
-        .container>tbody {
-            display: inline-block;
-            width: 100%;
-        }
-
-        .container>thead>tr {
-            display: inline-block;
-            width: 100%;
-        }
-
-        .container>tbody>tr {
-            display: inline-block;
-            width: 100%;
-        }
-
-        .container>thead>tr>th>.user-image {
+        .container img {
             width: 150px;
             height: 150px;
             object-fit: cover;
             border-radius: 50%;
             display: block;
-            /* Added display block to center the image */
             margin: 0 auto;
-            /* Added margin auto to center the image */
         }
 
-        .container>tbody>tr>.title>h1 {
+        .title h1 {
             font-size: 32px;
             font-weight: 600;
             color: #000000;
@@ -65,7 +49,7 @@
             width: 100%;
         }
 
-        .container>tbody>tr>.content>.user-name {
+        .content .user-name {
             font-size: 20px;
             font-weight: 400;
             line-height: 24.2px;
@@ -75,7 +59,7 @@
             color: #000000;
         }
 
-        .container>tbody>tr>.content>.welcome-msg {
+        .content .welcome-msg {
             font-size: 20px;
             font-weight: 400;
             line-height: 30px;
@@ -85,7 +69,7 @@
             width: 100%;
         }
 
-        .container>tbody>tr>.content>.user-details {
+        .content .user-details {
             font-size: 18px;
             font-weight: 400;
             line-height: 28px;
@@ -95,29 +79,37 @@
             width: 100%;
         }
 
-        .container>tbody>tr>.content>.user-image {
+        .content .user-image {
             padding-bottom: 24px;
             text-align: center;
         }
 
-        .container>tbody>tr>.nav-link {
+        .nav-link {
             height: 56px;
             width: 100%;
+            text-align: center;
+            /* Center the button */
         }
 
-        .container>tbody>tr>.nav-link>a {
+        .name-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .nav-link a {
             color: #ffffff;
             font-size: 20px;
             font-weight: 600;
             line-height: 24.2px;
-            text-align: left;
-            padding: 16px 20px 16px 20px;
+            padding: 16px 20px;
             border-radius: 8px;
-            opacity: 1;
             background: #1d64aa;
             text-decoration: none;
-            width: auto;
-            display: block;
+            display: inline-block;
+            /* Change to inline-block for proper centering */
         }
     </style>
 </head>
@@ -126,10 +118,10 @@
     <table class='container'>
         <thead>
             <tr>
-                <th>
+                <th style="text-align: center;"> <!-- Center the image -->
                     <img class='user-image'
                         src='https://media.licdn.com/dms/image/D560BAQFu4eh9Yj4IDg/company-logo_200_200/0/1684420879029/aaludratech_logo?e=2147483647&v=beta&t=lc2WLP9RsG8YHo4EQXprjGguhqMl9Mbpjij-5RADtVM'
-                        alt='company Image' />
+                        alt='Company Image' />
                 </th>
             </tr>
         </thead>
@@ -149,7 +141,7 @@
                     <div class='user-details'>
                         <p><strong>Email:</strong> {{email}}</p>
                         <p><strong>Age:</strong> {{age}}</p>
-                        <p><strong>Roll:</strong> {{roll}}</p>
+                        <p><strong>Role:</strong> {{role}}</p>
                         <p><strong>Company:</strong> {{companyname}}</p>
                     </div>
                     <div class='user-image'>
@@ -158,8 +150,8 @@
                 </td>
             </tr>
             <tr>
-                <td class='nav-link'>
-                    <a href="https://aaludra.com/">Company Website</a>
+                <td class="nav-link">
+                    <a href="http://localhost:3000/user-list">{{name}}</a>
                 </td>
             </tr>
         </tbody>

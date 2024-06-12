@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UserDetailsDto } from './dto/userRequest.dto';
-import { User } from './schema/user.schema';
+// import { User } from './schema/user.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseUpdateDataInterceptor } from './interceptor/filevalidation.interceptor';
 import { Response } from 'express';
@@ -47,7 +47,6 @@ export class AppController {
       );
       res.send(pdfBuffer);
     } catch (error) {
-      // Handle errors
       res.status(500).json({ message: 'Error generating PDF' });
     }
   }
@@ -100,7 +99,6 @@ export class AppController {
       );
       res.send(pdfBuffer);
     } catch (error) {
-      // Handle errors
       res.status(500).json({ message: 'Error generating PDF' });
     }
   }

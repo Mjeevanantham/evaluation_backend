@@ -13,7 +13,7 @@ export class User extends ObjectIdDocument {
   age: string;
 
   @Prop({ required: true })
-  roll: string;
+  role: string;
 
   @Prop({ required: true })
   companyname: string;

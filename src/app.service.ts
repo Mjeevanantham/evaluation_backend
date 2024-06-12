@@ -4,18 +4,18 @@ import { User } from './schema/user.schema';
 import { UserRepository } from './models-repository/user.repository';
 import { MailService } from './mail/mail.service';
 import { BlobServiceClient } from '@azure/storage-blob';
-import * as PDFDocument from 'pdfkit';
-import axios from 'axios';
 import {
-  // switchMap,
   from,
   map,
   catchError,
   throwError,
-  // Observable,
-  // of,
+
 } from 'rxjs';
 import { STATUS_CODES } from 'http';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as pdf from 'html-pdf';
+
 @Injectable()
 export class AppService {
   constructor(
@@ -50,7 +50,6 @@ export class AppService {
   }
 
   async exportPdfByID(id: string): Promise<any> {
-
     const userDetails = await this.userRepository.findOneById(id, {});
 
     return userDetails;
@@ -123,113 +122,48 @@ export class AppService {
       )
       .toPromise(); // Ensure the observable is converted back to a Promise
   }
+
   async generatePdf(data: UserDetailsDto): Promise<Buffer> {
-    return new Promise(async (resolve, reject) => {
-      const doc = new PDFDocument();
-      const buffers: Buffer[] = [];
+    const templatePath = path.resolve(
+      __dirname,
+      'utils',
+      'templates',
+      'template.html',
+    );
+    console.log('templatePath>>>> ' + templatePath);
 
-      // Add event listeners to gather the PDF data
-      doc.on('data', (chunk) => buffers.push(chunk));
-      doc.on('end', () => {
-        const pdfBuffer = Buffer.concat(buffers);
-        resolve(pdfBuffer);
-      });
+    const templateHtml = fs.readFileSync(templatePath, 'utf8');
+    console.log('templateHtml loaded successfully');
 
-      try {
-        doc.fontSize(50).fillColor('lightgray').opacity(0.3);
+    const populatedHtml = this.populateHtmlTemplate(templateHtml, data);
+    console.log('populatedHtml>>>> ' + populatedHtml);
 
-        // Add watermark
-        doc
-          .text('Confidential', 100, 300, { angle: 45 })
-          .opacity(1)
-          .fillColor('black');
-
-        // Add logo
-        const logoUrl =
-          'https://media.licdn.com/dms/image/D560BAQFu4eh9Yj4IDg/company-logo_200_200/0/1684420879029/aaludratech_logo?e=2147483647&v=beta&t=lc2WLP9RsG8YHo4EQXprjGguhqMl9Mbpjij-5RADtVM';
-        try {
-          const logoResponse = await axios.get(logoUrl, {
-            responseType: 'arraybuffer',
-          });
-          const logoBuffer = Buffer.from(logoResponse.data, 'binary');
-          doc.image(logoBuffer, 50, 50, { width: 100 }).moveDown(0.5);
-        } catch (error) {
-          console.error('Error loading logo:', error);
-        }
-
-        // Add title
-        doc.fontSize(20).text('Resume', { align: 'center' }).moveDown(0.5);
-        doc.moveTo(50, 160).lineTo(550, 160).stroke();
-
-        // Add user details
-        const labelX = 50,
-          valueX = 150;
-        doc
-          .fontSize(16)
-          .text('Name:', labelX, 180)
-          .text(data.name, valueX, 180);
-        doc
-          .fontSize(16)
-          .text('Email:', labelX, 200)
-          .fillColor('blue')
-          .text(data.email, valueX, 200, { link: `mailto:${data.email}` })
-          .fillColor('black');
-        doc
-          .fontSize(16)
-          .text('Age:', labelX, 220)
-          .text(data.age.toString(), valueX, 220);
-        doc
-          .fontSize(16)
-          .text('Role:', labelX, 240)
-          .text(data.roll, valueX, 240);
-        doc
-          .fontSize(16)
-          .text('Company:', labelX, 260)
-          .text(data.companyname, valueX, 260);
-
-        // Add user image
-        try {
-          const imageResponse = await axios.get(data.image, {
-            responseType: 'arraybuffer',
-          });
-          const imgBuffer = Buffer.from(imageResponse.data, 'binary');
-          doc
-            .image(imgBuffer, 400, 180, { width: 100, height: 150 })
-            .moveDown(0.9);
-        } catch (error) {
-          console.error('Error loading image:', error);
-          doc.text('Error loading image').moveDown(0.5);
-        }
-
-        // Add status
-        doc
-          .fontSize(16)
-          .text('Status:', labelX, 280)
-          .text(data.status, valueX, 280);
-
-        // Draw a horizontal line
-        doc.moveTo(50, 300).lineTo(550, 300).stroke();
-
-        // Add agreement and company details
-        doc.moveDown(1).fontSize(14).text('Agreement:');
-        doc
-          .fontSize(12)
-          .text(
-            'This document is confidential and intended solely for the use of the individual to whom it is addressed. If you have received this document in error, please notify the sender immediately and delete it from your system.',
-          );
-        doc.moveDown(1).fontSize(14).text('About the Company:');
-        doc
-          .fontSize(12)
-          .text(
-            'ATS is a leading company in innovative solutions, providing top-notch services to our clients worldwide. Our mission is to deliver excellence in every project we undertake.',
-          );
-
-        // Finalize the PDF
-        doc.end();
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-        reject(error);
-      }
+    return new Promise((resolve, reject) => {
+      pdf
+        .create(populatedHtml, { format: 'Letter' })
+        .toBuffer((err, buffer) => {
+          if (err) {
+            console.error('Error generating PDF:', err);
+            reject(err);
+          } else {
+            console.log('PDF generated successfully');
+            resolve(buffer);
+          }
+        });
     });
+  }
+
+  private populateHtmlTemplate(template: string, data: UserDetailsDto): string {
+    console.log(
+      'Populating HTML template with data >>>>>>> ' + JSON.stringify(data),
+    );
+
+    return template
+      .replace('{{name}}', data.name)
+      .replace('{{email}}', data.email)
+      .replace('{{age}}', data.age.toString())
+      .replace('{{role}}', data.role)
+      .replace('{{companyname}}', data.companyname)
+      .replace('{{status}}', data.status);
   }
 }

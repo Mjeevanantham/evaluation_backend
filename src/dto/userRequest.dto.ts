@@ -13,9 +13,9 @@ export class UserDetailsDto {
   @IsNotEmpty({ message: 'Age is required and cannot be empty.' })
   age: string;
 
-  @IsString({ message: 'Roll must be a string.' })
-  @IsNotEmpty({ message: 'Roll is required and cannot be empty.' })
-  roll: string;
+  @IsString({ message: 'Role must be a string.' })
+  @IsNotEmpty({ message: 'Role is required and cannot be empty.' })
+  role: string;
 
   @IsString({ message: 'Company name must be a string.' })
   @IsNotEmpty({ message: 'Company name is required and cannot be empty.' })
